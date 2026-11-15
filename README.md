@@ -55,3 +55,11 @@ HTML, CSS, JavaScript, Monaco Editor (CDN), and the Piston API.
 ## License
 
 MIT
+
+## Topic practice arena
+
+Open [Practice](https://thanish2910.github.io/C-studio/practice.html) to work through the starter C challenges grouped by topic: basics, conditionals, loops, arrays, functions and recursion. Each challenge includes sample tests and additional interface-hidden checks, with output comparison and local progress tracking.
+
+**Important testing limitation:** this first version is a static GitHub Pages app. The challenge definitions and all test inputs/expected outputs are delivered to the browser, so the extra checks are not secure hidden tests and can be inspected by a user. The Piston API runs the submitted C code, while the browser compares its output. A true HackerRank-style judge with private test data, server-side scoring, accounts and leaderboards requires a trusted backend/judge service; GitHub Pages alone cannot keep test cases secret.
+
+Practice drafts and solved status are stored in browser local storage, not synced to GitHub or other devices.
