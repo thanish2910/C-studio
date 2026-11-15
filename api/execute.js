@@ -36,7 +36,7 @@ module.exports = async function handler(req, res) {
   if (req.method === "OPTIONS") return res.status(204).end();
 
   const origin = req.headers.origin || "";
-  if (origin && !ALLOWED_ORIGINS.has(origin)) {
+  if (!origin || !ALLOWED_ORIGINS.has(origin)) {
     return send(res, 403, { error: "This origin is not allowed to use the C Studio compiler." });
   }
 
