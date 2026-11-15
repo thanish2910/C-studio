@@ -320,18 +320,27 @@ int main(void) {
   function saveDrafts(){try{localStorage.setItem("c-studio-practice-drafts",JSON.stringify(drafts))}catch(_){}}
   function normalize(s){return String(s??"").replace(/\r/g,"").trim().split("\n").map(x=>x.trimEnd()).join("\n")}
   async function execute(code,input){
-    const response=await fetch("https://emkc.org/api/v2/piston/execute",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({language:"c",version:"10.2.0",files:[{name:"solution.c",content:code}],stdin:input,compile_timeout:10000,run_timeout:5000,run_memory_limit:128000000})});
-    if(!response.ok){
-      let message="";
-      try{message=(await response.json()).message||""}catch(_){}
-      if(response.status===401)throw new Error("The public Piston compiler now requires approval and returned HTTP 401. Your C code has not been compiled. C Studio needs an authorized compiler service before tests can run.");
-      throw new Error("Compiler service returned HTTP "+response.status+(message?": "+message:""));
+    const apiBase=(window.C_STUDIO_API_URL||"").replace(/\\/+$/,"");
+    if(!apiBase || apiBase.includes("YOUR-VERCEL")) throw new Error("Compiler backend URL is not configured yet. Finish the Vercel deployment and set config.js.");
+    const headers={"Content-Type":"application/json"};
+    const created=await fetch(apiBase+"/api/execute",{method:"POST",headers,body:JSON.stringify({source_code:code,stdin:input})});
+    const createdData=await created.json().catch(()=>({}));
+    if(!created.ok) throw new Error(createdData.error||("Compiler backend returned HTTP "+created.status));
+    if(!createdData.token) throw new Error("Compiler backend did not return a submission token.");
+    for(let attempt=0;attempt<14;attempt++){
+      if(attempt) await new Promise(resolve=>setTimeout(resolve,650));
+      const resultResponse=await fetch(apiBase+"/api/execute?token="+encodeURIComponent(createdData.token),{headers});
+      const result=await resultResponse.json().catch(()=>({}));
+      if(!resultResponse.ok) throw new Error(result.error||("Could not retrieve compiler result (HTTP "+resultResponse.status+")"));
+      const statusId=result.status?.id;
+      if(statusId===1||statusId===2) continue;
+      if(statusId!==3){
+        const detail=[result.compile_output,result.stderr,result.message,result.status?.description].filter(Boolean).join("\\n");
+        return {error:detail||"Program did not finish successfully ("+(result.status?.description||"unknown status")+")",stdout:result.stdout||""};
+      }
+      return {stdout:result.stdout||"",stderr:result.stderr||""};
     }
-    const data=await response.json();
-    if(data.compile?.code!==0 || data.compile?.stderr) return {error:data.compile?.stderr||data.compile?.stdout||"Compilation failed"};
-    const run=data.run||{};
-    if(run.code!==0)return {error:run.stderr||("Program exited with code "+run.code),stdout:run.stdout||""};
-    return {stdout:run.stdout||"",stderr:run.stderr||""};
+    throw new Error("The compiler queue is taking longer than expected. Please try again.");
   }
   async function runTests(all){
     if(busy||!editor||!selectedProblem)return;
