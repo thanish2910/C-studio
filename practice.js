@@ -321,7 +321,12 @@ int main(void) {
   function normalize(s){return String(s??"").replace(/\r/g,"").trim().split("\n").map(x=>x.trimEnd()).join("\n")}
   async function execute(code,input){
     const response=await fetch("https://emkc.org/api/v2/piston/execute",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({language:"c",version:"10.2.0",files:[{name:"solution.c",content:code}],stdin:input,compile_timeout:10000,run_timeout:5000,run_memory_limit:128000000})});
-    if(!response.ok)throw new Error("Compiler service returned HTTP "+response.status);
+    if(!response.ok){
+      let message="";
+      try{message=(await response.json()).message||""}catch(_){}
+      if(response.status===401)throw new Error("The public Piston compiler now requires approval and returned HTTP 401. Your C code has not been compiled. C Studio needs an authorized compiler service before tests can run.");
+      throw new Error("Compiler service returned HTTP "+response.status+(message?": "+message:""));
+    }
     const data=await response.json();
     if(data.compile?.code!==0 || data.compile?.stderr) return {error:data.compile?.stderr||data.compile?.stdout||"Compilation failed"};
     const run=data.run||{};
@@ -355,11 +360,24 @@ int main(void) {
         if(!ok){const info=document.createElement("div");info.className="result-note";info.textContent=detail;row.append(info)}
         $("test-results").append(row);
         $("test-counter").textContent=(i+1)+" / "+tests.length+" checked";
+        if(detail.includes("HTTP 401")) {
+          $("submission-status").textContent="Compiler unavailable";
+          const notice=document.createElement("div");
+          notice.className="result-note";
+          notice.textContent="No further tests were sent. This is an authorization issue with the online compiler, not a failure in your solution.";
+          $("test-results").append(notice);
+          break;
+        }
       }
-      const allPassed=passed===tests.length;
-      $("result-summary").innerHTML=allPassed?'<strong>All '+passed+' tests passed!</strong> Great work.':passed+" of "+tests.length+" tests passed. Review your logic and try again.";
-      $("submission-status").textContent=allPassed&&all?"Accepted": "Completed";
-      if(all&&allPassed){solved.add(p.id);saveProgress();renderChallenges()}
+      const serviceBlocked=$("submission-status").textContent==="Compiler unavailable";
+      const allPassed=!serviceBlocked && passed===tests.length;
+      if(serviceBlocked){
+        $("result-summary").textContent="Testing could not start: the compiler service requires authorization. Your code has not been evaluated.";
+      } else {
+        $("result-summary").innerHTML=allPassed?'<strong>All '+passed+' tests passed!</strong> Great work.':passed+" of "+tests.length+" tests passed. Review your logic and try again.";
+        $("submission-status").textContent=allPassed&&all?"Accepted": "Completed";
+        if(all&&allPassed){solved.add(p.id);saveProgress();renderChallenges()}
+      }
     }finally{
       busy=false;$("run-samples").disabled=false;$("submit-all").disabled=false;
     }
