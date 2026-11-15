@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#1e1e1e">
+  <title>C Studio — Online C IDE</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='18' fill='%23007acc'/%3E%3Ctext x='50' y='67' font-size='58' text-anchor='middle' fill='white' font-family='monospace'%3EC%3C/text%3E%3C/svg%3E">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="activity-bar" aria-label="Activity bar">
+      <button class="activity active" title="Explorer" aria-label="Explorer">▤</button>
+      <button class="activity" id="new-file-activity" title="New file" aria-label="New file">＋</button>
+      <div class="activity-spacer"></div>
+      <button class="activity" id="theme-toggle" title="Toggle theme" aria-label="Toggle theme">◐</button>
+    </aside>
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-heading"><span>EXPLORER</span><button id="collapse-sidebar" title="Collapse explorer">⌄</button></div>
+      <div class="workspace-name">▾ &nbsp; C-STUDIO</div>
+      <div class="file-list" id="file-list">
+        <button class="file-entry selected" data-file="main.c"><span class="c-icon">C</span> main.c</button>
+      </div>
+      <div class="sidebar-footer">OPEN EDITORS <span>1</span></div>
+    </aside>
+    <main class="main-area">
+      <header class="topbar">
+        <div class="breadcrumbs"><span>C-Studio</span><span class="crumb-sep">›</span><span id="breadcrumb-file">main.c</span></div>
+        <div class="top-actions">
+          <button class="run-button" id="run-button"><span>▶</span> Run <kbd>Ctrl ↵</kbd></button>
+          <button class="icon-button" id="save-button" title="Save file">▣</button>
+          <button class="icon-button" id="download-button" title="Download file">⇩</button>
+        </div>
+      </header>
+      <div class="tabs" id="tabs"><button class="tab active" data-file="main.c"><span class="c-icon">C</span> main.c <span class="tab-close">×</span></button></div>
+      <section class="editor-wrap">
+        <div id="editor" aria-label="C code editor"><div class="editor-loading">Loading code editor…</div></div>
+      </section>
+      <section class="panel" id="terminal-panel">
+        <div class="panel-heading">
+          <div class="panel-tabs"><button class="panel-tab active">TERMINAL</button><button class="panel-tab" id="problems-tab">OUTPUT</button></div>
+          <div class="panel-tools"><span id="run-status">Ready</span><button id="clear-terminal" title="Clear terminal">⌫</button><button id="hide-terminal" title="Hide terminal">⌄</button></div>
+        </div>
+        <div class="terminal-body" id="terminal-body">
+          <div class="terminal-welcome">C Studio Terminal <span class="muted">— powered by an online C compiler</span></div>
+          <div class="stdin-row"><label for="stdin-input">stdin</label><textarea id="stdin-input" rows="2" placeholder="Enter program input here (optional)…"></textarea></div>
+          <pre id="terminal-output" aria-live="polite">Ready. Press Run or Ctrl + Enter to compile and execute main.c.</pre>
+        </div>
+      </section>
+      <footer class="statusbar">
+        <div><span class="status-dot"></span> C Studio</div><div class="status-right"><span>C</span><span>UTF-8</span><span>LF</span><span id="cursor-position">Ln 1, Col 1</span></div>
+      </footer>
+    </main>
+  </div>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
