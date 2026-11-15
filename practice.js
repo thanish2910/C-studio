@@ -145,7 +145,7 @@ int main(void) {
       <div class="editor-heading"><span>◉ &nbsp; SOLUTION.C</span><div class="editor-actions"><button class="small-action" id="reset-code">Reset code</button></div></div>
       <div class="challenge-editor"><div id="challenge-code"><div class="editor-loading">Loading editor…</div></div></div>
       <div class="submit-row"><button class="small-action" id="run-samples">Run sample tests</button><button class="submit-button" id="submit-all">Submit solution →</button><span id="submission-status" class="result-note"></span></div>
-      <div class="test-output"><div class="test-heading"><strong>TEST RESULTS</strong><span id="test-counter">Not run yet</span></div><div id="test-results" class="test-results"><div class="result-note">Run your code to see individual test results.</div></div><div id="result-summary" class="result-summary"></div><div class="result-note">Hidden tests check additional edge cases. Their input and expected output stay concealed.</div></div>
+      <div class="test-output"><div class="test-heading"><strong>TEST RESULTS</strong><span id="test-counter">Not run yet</span></div><div id="test-results" class="test-results"><div class="result-note">Run your code to see individual test results.</div></div><div id="result-summary" class="result-summary"></div><div class="result-note">Extra checks are hidden in the interface in this starter version. Because challenge data is delivered to the browser, these are not secure server-side hidden tests.</div></div>
     </div>`;
     ws.querySelector("h2").textContent=p.title;
     ws.querySelector(".difficulty").textContent=p.difficulty;
