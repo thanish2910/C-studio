@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#1e1e1e"><title>Practice — C Studio</title>
+  <link rel="stylesheet" href="styles.css"><link rel="stylesheet" href="practice.css">
+</head>
+<body class="practice-page">
+  <header class="practice-topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">C</span> C Studio</a>
+    <nav><a class="nav-link" href="index.html">Editor</a><a class="nav-link active" href="practice.html">Practice</a></nav>
+    <span class="practice-tag">LEARNING ARENA</span>
+  </header>
+  <main class="practice-layout">
+    <aside class="challenge-sidebar">
+      <div class="side-title">PRACTICE TRACKS</div>
+      <div id="topic-list" class="topic-list"></div>
+      <div class="progress-card"><div class="progress-heading">YOUR PROGRESS <strong id="solved-count">0 / 6</strong></div><div class="progress-track"><span id="progress-fill"></span></div><small id="progress-caption">Start your first challenge</small></div>
+    </aside>
+    <section class="challenge-main">
+      <div class="challenge-header"><div><div class="eyebrow">C PROGRAMMING • PRACTICE</div><h1 id="topic-heading">All challenges</h1><p id="topic-description">Build your C skills one problem at a time.</p></div><div class="level-legend"><span class="easy-dot"></span> Easy <span class="medium-dot"></span> Medium</div></div>
+      <div class="challenge-content">
+        <section class="problem-list-panel"><div class="list-heading"><span>CHALLENGES</span><span id="problem-count">6 problems</span></div><div id="challenge-list"></div></section>
+        <section class="problem-workspace" id="problem-workspace">
+          <div class="empty-challenge"><div class="empty-icon">⌘</div><h2>Choose a challenge</h2><p>Select a topic and problem to open its instructions and test your solution.</p></div>
+        </section>
+      </div>
+    </section>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.52.2/min/vs/loader.min.js"></script>
+  <script src="practice.js"></script>
+</body>
+</html>
