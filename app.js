@@ -80,38 +80,42 @@ int main(void) {
     persist();
     const code = files.get(activeFile);
     if (!code.trim()) { showOutput("Your file is empty."); return; }
+    const apiBase = (window.C_STUDIO_API_URL || "").replace(/\\/+$/, "");
+    if (!apiBase) { showOutput("Compiler backend is not configured yet. Check config.js.", "output-error"); return; }
     $("run-button").disabled = true;
     status.textContent = "Compiling…";
-    showOutput("Compiling and running " + activeFile + "…");
+    showOutput("Submitting " + activeFile + " to the C compiler…");
     try {
-      const response = await fetch("https://emkc.org/api/v2/piston/execute", {
+      const created = await fetch(apiBase + "/api/execute", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          language: "c",
-          version: "10.2.0",
-          files: [{ name: activeFile, content: code }],
-          stdin: $("stdin-input").value,
-          compile_timeout: 10000,
-          run_timeout: 5000,
-          run_memory_limit: 128000000
-        })
+        body: JSON.stringify({ source_code: code, stdin: $("stdin-input").value })
       });
-      if (!response.ok) throw new Error("Compiler service returned HTTP " + response.status + ". Please try again later.");
-      const data = await response.json();
-      const compile = data.compile || {};
-      const run = data.run || {};
-      const parts = [];
-      if (compile.stdout) parts.push(compile.stdout);
-      if (compile.stderr) parts.push(compile.stderr);
-      if (run.stdout) parts.push(run.stdout);
-      if (run.stderr) parts.push(run.stderr);
-      if (!parts.length) parts.push(run.code === 0 ? "Program finished successfully (no output)." : "No output returned.");
-      if (typeof run.code === "number") parts.push("\n[Process exited with code " + run.code + "]");
-      showOutput(parts.join("\n"), run.code === 0 && !compile.code ? "output-success" : "output-error");
-      status.textContent = compile.code || run.code ? "Finished with errors" : "Finished";
+      const createdData = await created.json().catch(() => ({}));
+      if (!created.ok) throw new Error(createdData.error || ("Compiler backend returned HTTP " + created.status));
+      if (!createdData.token) throw new Error("Compiler backend did not return a submission token.");
+      let result = null;
+      for (let attempt = 0; attempt < 14; attempt++) {
+        if (attempt) await new Promise(resolve => setTimeout(resolve, 650));
+        const response = await fetch(apiBase + "/api/execute?token=" + encodeURIComponent(createdData.token));
+        result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || ("Could not retrieve compiler result (HTTP " + response.status + ")"));
+        if (result.status?.id === 1 || result.status?.id === 2) continue;
+        break;
+      }
+      if (!result || result.status?.id === 1 || result.status?.id === 2) throw new Error("The compiler queue is taking longer than expected. Please try again.");
+      const details = [result.compile_output, result.stderr, result.message].filter(Boolean);
+      if (result.status?.id !== 3) {
+        showOutput(details.join("\\n") || result.status?.description || "Program did not finish successfully.", "output-error");
+        status.textContent = result.status?.description || "Run failed";
+      } else {
+        const parts = [result.stdout || "(Program finished with no output.)"];
+        if (result.time) parts.push("\\n[Execution time: " + result.time + "s]");
+        showOutput(parts.join(""), "output-success");
+        status.textContent = "Finished";
+      }
     } catch (error) {
-      showOutput("Could not run the program.\n" + error.message + "\n\nCheck your internet connection and try again. The online compiler is a separate service.", "output-error");
+      showOutput("Could not run the program.\\n" + error.message, "output-error");
       status.textContent = "Run failed";
     } finally {
       $("run-button").disabled = false;
