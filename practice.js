@@ -320,7 +320,7 @@ int main(void) {
   function saveDrafts(){try{localStorage.setItem("c-studio-practice-drafts",JSON.stringify(drafts))}catch(_){}}
   function normalize(s){return String(s??"").replace(/\r/g,"").trim().split("\n").map(x=>x.trimEnd()).join("\n")}
   async function execute(code,input){
-    const apiBase=(window.C_STUDIO_API_URL||"").replace(/\\/+$/,"");
+    const apiBase=(window.C_STUDIO_API_URL||"").replace(new RegExp("/+$"),"");
     if(!apiBase || apiBase.includes("YOUR-VERCEL")) throw new Error("Compiler backend URL is not configured yet. Finish the Vercel deployment and set config.js.");
     const headers={"Content-Type":"application/json"};
     const created=await fetch(apiBase+"/api/execute",{method:"POST",headers,body:JSON.stringify({source_code:code,stdin:input})});
