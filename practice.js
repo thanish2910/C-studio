@@ -1,88 +1,237 @@
 (() => {
   const topics = [
-    { id:"all", name:"All topics", icon:"⌂", description:"Build your C skills one problem at a time." },
-    { id:"basics", name:"C Basics", icon:"C", description:"Input, output, variables and arithmetic." },
-    { id:"conditionals", name:"Conditionals", icon:"⑂", description:"Make decisions with if, else and switch." },
-    { id:"loops", name:"Loops", icon:"↻", description:"Repeat work using for, while and do-while." },
-    { id:"arrays", name:"Arrays", icon:"▦", description:"Store, scan and process collections of values." },
-    { id:"functions", name:"Functions", icon:"ƒ", description:"Break programs into reusable functions." },
-    { id:"recursion", name:"Recursion", icon:"⤴", description:"Solve problems by reducing them into smaller calls." }
+    {id:"all",name:"All lab problems",icon:"⌂",description:"Your PPSC lab internal practice bank."},
+    {id:"functions",name:"Functions",icon:"ƒ",description:"Function basics, call by value and call by address."},
+    {id:"recursion",name:"Recursion",icon:"↻",description:"Practise the recursive programs from your lab list."},
+    {id:"sorting",name:"Sorting",icon:"⇅",description:"Bubble sort and selection sort."},
+    {id:"searching",name:"Searching",icon:"⌕",description:"Linear search and binary search."},
+    {id:"matrices",name:"Matrices",icon:"▦",description:"Matrix arithmetic and symmetric matrix checks."}
   ];
+  const make = (id,topic,title,difficulty,description,input,output,exampleIn,exampleOut,starter,tests,constraints="Follow the input and output format exactly.") => ({id,topic,title,difficulty,minutes:"15 min",description,input,output,exampleIn,exampleOut,constraints,starter,tests});
+  const tests = (a,b,c,d,e) => [["Sample 1",a,b,true],["Sample 2",c,d,true],["Hidden test 1",e[0],e[1],false],["Hidden test 2",e[2],e[3],false]];
   const problems = [
-    {id:"sum-two",topic:"basics",title:"Add Two Numbers",difficulty:"Easy",minutes:"10 min",description:"Read two integers from standard input and print their sum. Your program should handle positive, negative and zero values.",input:"Two integers a and b separated by a space.",output:"Print one integer: a + b.",exampleIn:"12 8",exampleOut:"20",constraints:"-1,000,000 ≤ a, b ≤ 1,000,000",starter:`#include <stdio.h>
+    make("function-basic","functions","Create and Call a Function","Easy","Write a function named display that prints the word Welcome. Call it from main.","No input.","Print Welcome.","","Welcome",`#include <stdio.h>
+
+void display(void) {
+    // Print Welcome
+}
+
+int main(void) {
+    // Call display
+    return 0;
+}
+`,tests("","Welcome","","Welcome",["","Welcome","","Welcome"])),
+    make("call-value","functions","Call by Value","Easy","Pass an integer to a function by value. Increase the parameter inside the function, then print the original variable in main. Observe that the original value does not change.","One integer n.","Print the original n after the function call.","10","10",`#include <stdio.h>
+
+void change(int x) {
+    // Increase x
+}
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    change(n);
+    printf("%d\\n", n);
+    return 0;
+}
+`,tests("10","10","-4","-4",["0","0","25","25"]),"Use a separate function with an integer parameter."),
+    make("call-address","functions","Call by Address","Medium","Pass the address of an integer to a function using a pointer parameter. Increase the value through the pointer and print the changed value in main.","One integer n.","Print n after the function changes it.","10","11",`#include <stdio.h>
+
+void change(int *x) {
+    // Change the value through x
+}
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    change(&n);
+    printf("%d\\n", n);
+    return 0;
+}
+`,tests("10","11","-4","-3",["0","1","99","100"]),"Use a pointer parameter and pass the address of n."),
+    make("rec-print","recursion","Print 1 to N","Easy","Use a recursive function to print all integers from 1 through n in ascending order, separated by spaces.","One positive integer n.","Print 1 through n.","5","1 2 3 4 5",`#include <stdio.h>
+
+void printNumbers(int n) {
+    // Write the recursive function
+}
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    printNumbers(n);
+    return 0;
+}
+`,tests("5","1 2 3 4 5","3","1 2 3",["1","1","7","1 2 3 4 5 6 7"])),
+    make("rec-sum","recursion","Sum of First N Natural Numbers","Easy","Find the sum 1 + 2 + ... + n using recursion.","One positive integer n.","Print the sum.","5","15",`#include <stdio.h>
+
+int sum(int n) {
+    // Base case and recursive case
+}
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    printf("%d\\n", sum(n));
+    return 0;
+}
+`,tests("5","15","10","55",["1","1","7","28"])),
+    make("rec-factorial","recursion","Factorial Using Recursion","Easy","Calculate n factorial using a recursive function. Remember that 0! is 1.","One integer n.","Print n factorial.","5","120",`#include <stdio.h>
+
+long long factorial(int n) {
+    // Write the recursive function
+}
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    printf("%lld\\n", factorial(n));
+    return 0;
+}
+`,tests("5","120","0","1",["1","1","7","5040"]),"0 ≤ n ≤ 12."),
+    make("rec-fibonacci","recursion","Fibonacci Series Using Recursion","Medium","Display the first n terms of the Fibonacci series using a recursive function. The series starts 0, 1, 1, 2, 3, ...","One integer n, the number of terms.","Print n terms separated by spaces.","7","0 1 1 2 3 5 8",`#include <stdio.h>
+
+int fib(int n) {
+    // Base cases and recursive case
+}
+
+int main(void) {
+    int n;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {
+        printf("%d ", fib(i));
+    }
+    return 0;
+}
+`,tests("7","0 1 1 2 3 5 8","5","0 1 1 2 3",["1","0","8","0 1 1 2 3 5 8 13"]),"1 ≤ n ≤ 20."),
+    make("rec-gcd","recursion","GCD Using Recursion","Medium","Find the greatest common divisor of two positive integers using the recursive Euclidean algorithm.","Two positive integers a and b.","Print their GCD.","48 18","6","" + `#include <stdio.h>
+
+int gcd(int a, int b) {
+    // Use the recursive Euclidean algorithm
+}
 
 int main(void) {
     int a, b;
     scanf("%d %d", &a, &b);
-
-    // Write your solution here
-
+    printf("%d\\n", gcd(a, b));
     return 0;
 }
-`,tests:[["Sample 1","12 8","20",true],["Sample 2","-5 9","4",true],["Hidden test 1","0 0","0",false],["Hidden test 2","-100 25","-75",false],["Hidden test 3","999999 1","1000000",false]]},
-    {id:"odd-even",topic:"conditionals",title:"Odd or Even",difficulty:"Easy",minutes:"10 min",description:"Read an integer n. Print EVEN if it is divisible by 2; otherwise print ODD. Consider zero and negative integers too.",input:"One integer n.",output:"Print exactly EVEN or ODD.",exampleIn:"17",exampleOut:"ODD",constraints:"-1,000,000 ≤ n ≤ 1,000,000",starter:`#include <stdio.h>
+`,tests("48 18","6","20 8","4",["7 3","1","100 25","25"])),
+    make("rec-prime","recursion","Prime Check Using Recursion","Medium","Check whether a positive integer is prime using a recursive helper function. Print PRIME or NOT PRIME.","One integer n.","Print PRIME or NOT PRIME.","17","PRIME",`#include <stdio.h>
+
+// Write a recursive function to test divisors
 
 int main(void) {
     int n;
     scanf("%d", &n);
-
-    // Decide whether n is odd or even
-
+    // Print PRIME or NOT PRIME
     return 0;
 }
-`,tests:[["Sample 1","17","ODD",true],["Sample 2","24","EVEN",true],["Hidden test 1","0","EVEN",false],["Hidden test 2","-7","ODD",false],["Hidden test 3","-12","EVEN",false]]},
-    {id:"factorial",topic:"loops",title:"Factorial with a Loop",difficulty:"Easy",minutes:"15 min",description:"Given a non-negative integer n, calculate n! using a loop. Remember that 0! is 1.",input:"One integer n.",output:"Print n factorial as an integer.",exampleIn:"5",exampleOut:"120",constraints:"0 ≤ n ≤ 12",starter:`#include <stdio.h>
+`,tests("17","PRIME","12","NOT PRIME",["1","NOT PRIME","2","PRIME"]),"1 ≤ n ≤ 100000."),
+    make("rec-pascal","recursion","Pascal's Triangle","Medium","Display Pascal's triangle for n rows. Use a recursive factorial function to calculate each binomial coefficient.","One integer n, the number of rows.","Print each row on a new line, with values separated by spaces.","4","1\n1 1\n1 2 1\n1 3 3 1",`#include <stdio.h>
+
+long long fact(int n) {
+    // Recursive factorial
+}
 
 int main(void) {
     int n;
     scanf("%d", &n);
-
-    // Calculate factorial using a loop
-
+    // Print Pascal's triangle
     return 0;
 }
-`,tests:[["Sample 1","5","120",true],["Sample 2","3","6",true],["Hidden test 1","0","1",false],["Hidden test 2","1","1",false],["Hidden test 3","10","3628800",false]]},
-    {id:"array-maximum",topic:"arrays",title:"Find the Maximum",difficulty:"Easy",minutes:"15 min",description:"Read n integers into an array and print the largest value. Do not assume that all values are positive.",input:"First line: n. Second line: n space-separated integers.",output:"Print the maximum element.",exampleIn:"5\n-4 12 7 0 9",exampleOut:"12",constraints:"1 ≤ n ≤ 100; -100,000 ≤ each value ≤ 100,000",starter:`#include <stdio.h>
+`,tests("4","1\n1 1\n1 2 1\n1 3 3 1","3","1\n1 1\n1 2 1",["1","1","5","1\n1 1\n1 2 1\n1 3 3 1\n1 4 6 4 1"]),"1 ≤ n ≤ 10."),
+    make("bubble-sort","sorting","Bubble Sort","Easy","Read n integers, sort them in ascending order using Bubble Sort, and print the sorted array.","First line: n. Second line: n integers.","Print the sorted values separated by spaces.","5\n5 1 4 2 8","1 2 4 5 8",`#include <stdio.h>
 
 int main(void) {
     int n, a[100];
     scanf("%d", &n);
-
-    for (int i = 0; i < n; i++) {
-        scanf("%d", &a[i]);
-    }
-
-    // Find and print the maximum
-
+    for (int i = 0; i < n; i++) scanf("%d", &a[i]);
+    // Implement Bubble Sort
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
     return 0;
 }
-`,tests:[["Sample 1","5\n-4 12 7 0 9","12",true],["Sample 2","3\n2 2 1","2",true],["Hidden test 1","1\n-99","-99",false],["Hidden test 2","4\n-8 -2 -15 -4","-2",false],["Hidden test 3","6\n5 90 12 90 3 1","90",false]]},
-    {id:"function-sum",topic:"functions",title:"Create an Add Function",difficulty:"Medium",minutes:"20 min",description:"Write a function named add that accepts two integers and returns their sum. Call the function from main and print the returned value.",input:"Two integers a and b separated by a space.",output:"Print the sum returned by add(a, b).",exampleIn:"30 45",exampleOut:"75",constraints:"-1,000,000 ≤ a, b ≤ 1,000,000. Implement and call a separate add function.",starter:`#include <stdio.h>
-
-// Define int add(int a, int b) here
+`,tests("5\n5 1 4 2 8","1 2 4 5 8","4\n4 3 2 1","1 2 3 4",["1\n-5","-5","3\n2 2 1","1 2 2"])),
+    make("selection-sort","sorting","Selection Sort","Easy","Read n integers, arrange them in ascending order using Selection Sort, and print the result.","First line: n. Second line: n integers.","Print the sorted values separated by spaces.","5\n64 25 12 22 11","11 12 22 25 64",`#include <stdio.h>
 
 int main(void) {
-    int a, b;
-    scanf("%d %d", &a, &b);
-
-    // Call add and print its result
-
-    return 0;
-}
-`,tests:[["Sample 1","30 45","75",true],["Sample 2","-8 3","-5",true],["Hidden test 1","0 0","0",false],["Hidden test 2","100000 -100000","0",false],["Hidden test 3","123 456","579",false]]},
-    {id:"fibonacci-recursive",topic:"recursion",title:"Fibonacci Number",difficulty:"Medium",minutes:"25 min",description:"Find the n-th Fibonacci number using recursion. Use F(0) = 0 and F(1) = 1. Each later term is the sum of the previous two terms.",input:"One integer n.",output:"Print F(n).",exampleIn:"7",exampleOut:"13",constraints:"0 ≤ n ≤ 20. Use a recursive function to calculate the result.",starter:`#include <stdio.h>
-
-// Write a recursive Fibonacci function
-
-int main(void) {
-    int n;
+    int n, a[100];
     scanf("%d", &n);
-
-    // Print the n-th Fibonacci number
-
+    for (int i = 0; i < n; i++) scanf("%d", &a[i]);
+    // Implement Selection Sort
+    for (int i = 0; i < n; i++) printf("%d ", a[i]);
     return 0;
 }
-`,tests:[["Sample 1","7","13",true],["Sample 2","5","5",true],["Hidden test 1","0","0",false],["Hidden test 2","1","1",false],["Hidden test 3","10","55",false]]}
+`,tests("5\n64 25 12 22 11","11 12 22 25 64","4\n3 1 4 2","1 2 3 4",["1\n8","8","3\n-2 0 -1","-2 -1 0"])),
+    make("linear-search","searching","Linear Search","Easy","Search for a key in an array using Linear Search. Print the zero-based index of its first occurrence, or -1 if it is absent.","First line: n. Second line: n integers. Third line: key.","Print the zero-based index or -1.","5\n4 2 7 1 9\n7","2",`#include <stdio.h>
+
+int main(void) {
+    int n, a[100], key, pos = -1;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) scanf("%d", &a[i]);
+    scanf("%d", &key);
+    // Implement Linear Search
+    printf("%d\\n", pos);
+    return 0;
+}
+`,tests("5\n4 2 7 1 9\n7","2","4\n3 5 8 9\n2","-1",["1\n6\n6","0","3\n2 2 4\n2","0"])),
+    make("binary-search","searching","Binary Search","Medium","Given a sorted array, find the zero-based index of key using Binary Search. Print -1 if it is not present.","First line: n. Second line: n sorted integers. Third line: key.","Print the zero-based index or -1.","5\n1 3 5 7 9\n7","3",`#include <stdio.h>
+
+int main(void) {
+    int n, a[100], key, low, high, mid, pos = -1;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) scanf("%d", &a[i]);
+    scanf("%d", &key);
+    // Implement Binary Search
+    printf("%d\\n", pos);
+    return 0;
+}
+`,tests("5\n1 3 5 7 9\n7","3","4\n2 4 6 8\n2","0",["1\n10\n10","0","5\n1 2 3 4 5\n6","-1"])),
+    make("matrix-add","matrices","Matrix Addition","Easy","Read two matrices of the same order r × c and print their sum.","First line: r c. Next r lines: matrix A. Next r lines: matrix B.","Print the resulting matrix, one row per line.","2 2\n1 2\n3 4\n5 6\n7 8","6 8\n10 12",`#include <stdio.h>
+
+int main(void) {
+    int r, c, a[10][10], b[10][10];
+    scanf("%d %d", &r, &c);
+    // Read both matrices, add and print
+    return 0;
+}
+`,tests("2 2\n1 2\n3 4\n5 6\n7 8","6 8\n10 12","1 3\n2 0 -1\n4 5 6","6 5 5",["1 1\n-3\n8","5","2 1\n1\n2\n3\n4","4\n6"])),
+    make("matrix-sub","matrices","Matrix Subtraction","Easy","Read two matrices of the same order r × c and print A − B.","First line: r c. Next r lines: matrix A. Next r lines: matrix B.","Print the resulting matrix, one row per line.","2 2\n8 7\n6 5\n1 2\n3 4","7 5\n3 1",`#include <stdio.h>
+
+int main(void) {
+    int r, c, a[10][10], b[10][10];
+    scanf("%d %d", &r, &c);
+    // Read both matrices, subtract and print
+    return 0;
+}
+`,tests("2 2\n8 7\n6 5\n1 2\n3 4","7 5\n3 1","1 2\n5 9\n2 3","3 6",["1 1\n0\n4","-4","2 1\n1\n2\n3\n4","-2\n-2"])),
+    make("matrix-mul","matrices","Matrix Multiplication","Medium","Read matrix A of order r × c and matrix B of order c × k. Calculate and print A × B.","First line: r c k. Next r lines: A. Next c lines: B.","Print the r × k product matrix.","2 2 2\n1 2\n3 4\n5 6\n7 8","19 22\n43 50",`#include <stdio.h>
+
+int main(void) {
+    int r, c, k, a[10][10], b[10][10], product[10][10] = {0};
+    scanf("%d %d %d", &r, &c, &k);
+    // Read matrices and calculate product
+    return 0;
+}
+`,tests("2 2 2\n1 2\n3 4\n5 6\n7 8","19 22\n43 50","1 2 1\n2 3\n4\n5","23",["1 1 1\n-3\n4","-12","2 1 2\n2\n3\n4 5","8 10\n12 15"])),
+    make("symmetric-matrix","matrices","Symmetric Matrix Check","Medium","Read a square matrix and check whether it is symmetric. A matrix is symmetric when A[i][j] equals A[j][i] for every valid pair.","First line: n. Next n lines: n integers each.","Print SYMMETRIC or NOT SYMMETRIC.","3\n1 2 3\n2 4 5\n3 5 6","SYMMETRIC",`#include <stdio.h>
+
+int main(void) {
+    int n, a[10][10], symmetric = 1;
+    scanf("%d", &n);
+    // Read matrix and compare it with its transpose
+    // Print SYMMETRIC or NOT SYMMETRIC
+    return 0;
+}
+`,tests("3\n1 2 3\n2 4 5\n3 5 6","SYMMETRIC","2\n1 2\n3 4","NOT SYMMETRIC",["1\n9","SYMMETRIC","2\n0 -1\n-1 0","SYMMETRIC"])),
+    make("nonsymmetric-matrix","matrices","Non-Symmetric Matrix Check","Easy","Read a square matrix and determine whether it is non-symmetric. Print NON-SYMMETRIC if it is not equal to its transpose; otherwise print SYMMETRIC.","First line: n. Next n lines: n integers each.","Print SYMMETRIC or NON-SYMMETRIC.","2\n1 2\n3 4","NON-SYMMETRIC",`#include <stdio.h>
+
+int main(void) {
+    int n, a[10][10], symmetric = 1;
+    scanf("%d", &n);
+    // Read matrix and compare with transpose
+    return 0;
+}
+`,tests("2\n1 2\n3 4","NON-SYMMETRIC","2\n5 6\n6 7","SYMMETRIC",["1\n0","SYMMETRIC","3\n1 0 2\n0 4 0\n2 0 3","SYMMETRIC"]))
   ];
   const $ = id => document.getElementById(id);
   let selectedTopic = "all";
