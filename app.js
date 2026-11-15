@@ -126,7 +126,7 @@ int main(void) {
     $("editor").innerHTML = "";
     editor = monaco.editor.create($("editor"), {
       value: files.get(activeFile),
-      language: "c",
+      language: "cpp",
       theme: "vs-dark",
       automaticLayout: true,
       fontSize: 14,
