@@ -80,7 +80,7 @@ int main(void) {
     persist();
     const code = files.get(activeFile);
     if (!code.trim()) { showOutput("Your file is empty."); return; }
-    const apiBase = (window.C_STUDIO_API_URL || "").replace(/\\/+$/, "");
+    const apiBase = (window.C_STUDIO_API_URL || "").replace(new RegExp("/+$"), "");
     if (!apiBase) { showOutput("Compiler backend is not configured yet. Check config.js.", "output-error"); return; }
     $("run-button").disabled = true;
     status.textContent = "Compiling…";
