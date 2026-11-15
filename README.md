@@ -63,3 +63,15 @@ Open [Practice](https://thanish2910.github.io/C-studio/practice.html) to work th
 **Important testing limitation:** this first version is a static GitHub Pages app. The challenge definitions and all test inputs/expected outputs are delivered to the browser, so the extra checks are not secure hidden tests and can be inspected by a user. The Piston API runs the submitted C code, while the browser compares its output. A true HackerRank-style judge with private test data, server-side scoring, accounts and leaderboards requires a trusted backend/judge service; GitHub Pages alone cannot keep test cases secret.
 
 Practice drafts and solved status are stored in browser local storage, not synced to GitHub or other devices.
+
+
+## Personal PPSC lab exam practice
+
+The Practice page is organized around the user's PPSC lab roadmap:
+- Functions: function basics, call by value, and call by address
+- Recursion: printing 1 to N, sum of natural numbers, factorial, Fibonacci series, GCD, prime checking, and Pascal's triangle
+- Sorting: Bubble Sort and Selection Sort
+- Searching: Linear Search and Binary Search
+- Matrices: addition, subtraction, multiplication, and symmetric/non-symmetric checks
+
+The challenge set is a starter practice bank, not an official question paper or a guarantee of exam questions. Check the syllabus sheet and instructor's instructions for exact wording and any additional items.
